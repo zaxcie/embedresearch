@@ -34,6 +34,7 @@ def get_embeding(token, word_embeding):
     '''
     try:
         embeding = word_embeding.wv[token]
+
     except KeyError:
 
         # If not part of the Word2Vec
