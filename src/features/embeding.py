@@ -1,9 +1,6 @@
 import numpy as np
 import tqdm
-from gensim.models.wrappers import FastText
-from gensim.models import KeyedVectors
 import nltk
-from sklearn.feature_extraction.text import TfidfVectorizer
 from src.features.config import NODEF_TOKEN, NULL_TOKEN, NODEF_TOKEN_VEC_VALUE, NULL_TOKEN_VEC_VALUE, SEQ_LENGTH, W2V_SIZE
 
 # TODO Fastext embeding
