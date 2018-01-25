@@ -72,14 +72,19 @@ def embed_sentence(sentence, word_embedings):
     return w2v_sentence
 
 
-def get_embeding_space(corpus, w2v):
+def create_embeding_space(corpus, w2v, no_def_init="zero"):
     '''
-
     :param corpus: A pandas list of string
     :param w2v: A gensim object representing a Word2Vec
+    :param no_def_init: One of zero, normal_random
     :return: embeding_indexes a dictionnary with key being word and value being an index with relate to embeding_space.
     embeding_space is a list which contain the word representation of the word that as this index as index.
     '''
+
+    if no_def_init == "zero":
+        mean = w2v.syn0.flatten().mean()
+        std = w2v.syn0.flatten().std()
+
     embeding_indexes = dict()
     embeding_indexes[NODEF_TOKEN] = 0
 
@@ -90,17 +95,22 @@ def get_embeding_space(corpus, w2v):
     tokens = set()
 
     corpus.apply(tokens.update)
-    print(tokens)
+
     for token in tqdm.tqdm(tokens):
         if token in w2v.vocab:
             embeding_indexes[token] = index
             embeding_space.append(w2v.wv[token])
             index += 1
+        elif no_def_init == "normal_random":
+            generated_embeding = np.random.normal(loc=mean, scale=std, size=w2v.vector_size)
+            embeding_indexes[token] = index
+            embeding_space.append(generated_embeding)
+            index += 1
 
     return embeding_indexes, embeding_space
 
 
-def get_index_from_token(tokens, indexes, pad=True):
+def index_from_token(tokens, indexes, pad=True):
     if not pad:
         raise NotImplementedError
 
@@ -123,8 +133,3 @@ def get_index_from_token(tokens, indexes, pad=True):
 
     return token_indexes
 
-
-def get_array_data(series):
-    series = series.as_matrix
-
-    return series
